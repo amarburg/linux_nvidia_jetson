@@ -18,8 +18,9 @@ kernel/kernel-4.9/drivers/video/tegra/host
 
 # Additional .gitignores added by Aaron
 .vscode/
-avt_build/build/
+avt_build/build*
 avt_build/resources/public_sources/
+avt_build/resources/rootfs/
 avt_build/build.txt
 
 kernel/kernel-4.9/signing_key
