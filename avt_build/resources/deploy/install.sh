@@ -116,8 +116,8 @@ inst() {
   elif [[ "$MODEL" == *"Xavier NX Developer Kit"* ]]; then
     echo "Deploying XAVIER NX DTB"
     sudo nvbootctrl set-active-boot-slot 0
-    sudo dd if=boot_sigheader.img.encrypt of=/dev/disk/by-partlabel/kernel >/dev/null 2>&1
-    sudo dd if=tegra194-p3668-all-p3509-0000_sigheader.dtb.encrypt of=/dev/disk/by-partlabel/kernel-dtb >/dev/null 2>&1
+    sudo dd if=boot_sigheader.img.encrypt of=/dev/disk/by-partlabel/kernel
+    sudo dd if=tegra194-p3668-all-p3509-0000_sigheader.dtb.encrypt of=/dev/disk/by-partlabel/kernel-dtb
 
   elif [[ "$MODEL" == "quill" ]]; then
     echo "Deploying JETSON TX2 DTB"

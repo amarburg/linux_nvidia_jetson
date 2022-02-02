@@ -16,7 +16,7 @@
 #include "tegra194-p3509-disp.dtsi"
 #include "tegra194-audio-p3668.dtsi"
 #include "tegra194-super-module-e2614-p3509.dtsi"
-#include "tegra194-camera-jakku-rbpcv3-imx477.dtsi"
+#include "tegra194-camera-antmicro-baseboard-avt-csi2-and-imx477.dtsi"
 / {
 	gpio-keys {
 		compatible = "gpio-keys";
@@ -129,8 +129,8 @@
 		"",     "",     "",     "",     "",     "",     "",     "",     "",     "",
 		"",     "",     "",     "",     "",     "GPIO13",     "",     "",     "",     "",
 		"",     "",     "",     "",     "",     "",     "",     "",     "",     "",
-		"",     "",     "",     "",     "",     "",     "",     "",     "",     "",
-		"",     "",     "",     "GPIO01",     "GPIO11",     "",     "GPIO07",     "",     "",     "",
+		"",     "",     "",     "",     "VSYNC_CAM2_1",     "",     "",     "",     "",     "",
+		"",     "",     "",     "GPIO01",     "VSYNC_CAM1_2",     "",     "GPIO07",     "",     "",     "",
 		"UART1_RTS",     "UART1_CTS",     "",     "",     "",     "",     "",     "",     "GPIO09",     "",
 		"",     "",     "",     "",     "",     "",     "",     "I2S0_SCLK",     "I2S0_DOUT",     "I2S0_DIN",
 		"I2S0_FS",     "",     "",     "",     "",     "",     "",     "",     "",     "",
@@ -147,6 +147,8 @@
 		/* gpio-name for 40-pin header, gpio-name given as COL(10) x ROW(2),
 		   Tegra-AON-GPIO starts from 248 */
 		gpio-line-names = "",   "",     "",     "",     "",     "",     "",     "",     "",     "",
-		"",     "",     "",     "",     "",     "",     "",     "",     "",     "",     "GPIO12";
+		"",     "",     "",     "",     "",     "",     "",     "",     "",     "VSYNC_CAM2_2",     "GPIO12",
+		"",   "",     "",     "",     "",     "",     "",     "",     "",     "",
+		"",   "",     "",     "",     "",     "",     "",     "",     "",     "";
 	};
 };

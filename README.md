@@ -1,4 +1,30 @@
-# NVIDIA Jetson driver
+# BSP for Xavier-NX / Antmicro Nano baseboard / Alvium / IMX477
+
+This is a fork of the Allied Vision [linux_nvidia_jetson](https://github.com/alliedvision/linux_nvidia_jetson) repo which builds a kernel for Jetson boards including support for the AVT Alvium cameras.  Onto this base the patches for the
+[AntMicro Nano baseboard](https://github.com/antmicro/jetson-nano-baseboard/tree/master/linux-patches) and Ridgerun's [support for the IMX477 (aka Raspberry Pi HQ) camera](https://github.com/RidgeRun/NVIDIA-Jetson-IMX477-RPIV3) have been applied
+
+The core instructions work well:
+
+```
+./setup.sh <build_dir> nx 
+./build.sh <build_dir> nx all all
+```
+
+In addition to patching an existing system, the `sd-card` method works well using an SD image downloaded from Nvidia ([link for Xavier NX](https://developer.nvidia.com/embedded/downloads#?tx=$product,jetson_xavier_nx)) by doing:
+
+```
+./deploy.sh <build_dir> nx sd-image <path to original sd image>
+```
+
+then writing the resulting image as per the original Nvidia instructions.
+
+----
+----
+
+**README from the original Allied Vision repo below.**
+
+----
+
 
 Driver for Allied Vision Alvium cameras with MIPI CSI-2 interface for NVIDIA Jetson with JetPack 4.4.1 (L4T 32.4.4)     
 https://developer.nvidia.com/embedded/jetpack
