@@ -22,4 +22,4 @@ avt_build/build/
 avt_build/resources/public_sources/
 avt_build/build.txt
 
-
+kernel/kernel-4.9/signing_key
