@@ -1,6 +1,6 @@
 #!/bin/bash
 #==============================================================================
-# Copyright (C) 2019 Allied Vision Technologies.  All Rights Reserved.
+# Copyright (C) 2021 Allied Vision Technologies.  All Rights Reserved.
 #
 # Redistribution of this file, in original or modified form, without
 # prior written consent of Allied Vision Technologies is prohibited.
@@ -30,7 +30,7 @@ NC='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 REQ_MACHINE="NVidia Jetson"
-REQ_KERNEL="4.9.140"
+REQ_KERNEL="4.9.201"
 DEST="/boot"
 
 echo -e ${RED}"Allied Vision"${NC}" MIPI CSI-2 camera driver for "${GREEN}${REQ_MACHINE}${NC}" (kernel "${REQ_KERNEL}")"
@@ -77,7 +77,10 @@ function valid_nano_model() {
 inst() {
   MODEL="$(tr -d '\000' < /proc/device-tree/model)"
 
+  if [[ "$MODEL" == *"Nano"* ]]; then
+    sudo l4t_payload_updater_t210 bl_update_payload >nv_update_engine.log
 
+<<<<<<< HEAD
   # On Nano, write signed dtb to partition
   if [[ "$MODEL" == *"Nano 2GB"* ]]; then
     echo "Deploying JETSON NANO 2GB DTB"
@@ -125,14 +128,15 @@ inst() {
     sudo nvbootctrl set-active-boot-slot 0
     install_dtb_extlinux tegra186-quill-p3310-1000-c03-00-base.dtb
 
+=======
+  else
+    sudo nv_update_engine -e 2>&1 >nv_update_engine.log
+    sudo nv_update_engine -i --payload bl_update_payload --no-reboot 2>&1 >>nv_update_engine.log
+>>>>>>> 98558ca694874bc24bc8e998c51717f26e878daa
   fi
 
   # All boards: copy Image + DTBs in rootfs
   sudo cp -r Image* $DEST
-  sudo cp -r *.dtb $DEST
-  if [ -d $DEST/dtb ]; then
-    sudo cp -r *.dtb $DEST/dtb
-  fi
   
   # All boards: Install modules in rootfs
   echo "Unpacking modules to /$(tar tzf modules.tar.gz | head -n 1)"
