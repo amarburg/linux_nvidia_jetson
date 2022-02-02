@@ -207,6 +207,10 @@ static void tegra_channel_fmt_align(struct tegra_channel *chan,
 	align = align > 0 ? align : 1;
 	bpl = tegra_core_bytes_per_line(*width, align, vfmt);
 
+	/* Align stride */
+	if (chan->vi->fops->vi_stride_align)
+		chan->vi->fops->vi_stride_align(&bpl);
+
 	if (!*bytesperline)
 		*bytesperline = bpl;
 
@@ -267,6 +271,10 @@ static void tegra_channel_update_format(struct tegra_channel *chan,
 	u32 denominator = (!bpp->denominator) ? 1 : bpp->denominator;
 	u32 numerator = (!bpp->numerator) ? 1 : bpp->numerator;
 	u32 bytesperline = (width * numerator / denominator);
+
+	/* Align stride */
+	if (chan->vi->fops->vi_stride_align)
+		chan->vi->fops->vi_stride_align(&bytesperline);
 
 	chan->format.width = width;
 	chan->format.height = height;
@@ -1027,11 +1035,11 @@ tegra_channel_querycap(struct file *file, void *fh, struct v4l2_capability *cap)
 {
 	struct tegra_channel *chan = video_drvdata(file);
 
-	cap->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING | V4L2_CAP_READWRITE;
+	cap->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
 	cap->device_caps |= V4L2_CAP_EXT_PIX_FORMAT;
 	cap->capabilities = cap->device_caps | V4L2_CAP_DEVICE_CAPS;
 
-	strlcpy(cap->driver, "avt_tegra_csi2", sizeof(cap->driver));
+	strlcpy(cap->driver, "tegra-video", sizeof(cap->driver));
 	strlcpy(cap->card, chan->video->name, sizeof(cap->card));
 	snprintf(cap->bus_info, sizeof(cap->bus_info), "platform:%s:%u",
 		 dev_name(chan->vi->dev), chan->port[0]);
@@ -1829,8 +1837,9 @@ int tegra_channel_init_subdevices(struct tegra_channel *chan)
 		v4l2_set_subdev_hostdata(sd, chan);
 		sd->grp_id = grp_id;
 		chan->subdev[num_sd++] = sd;
-		/* Add subdev name to this video dev name */
-		snprintf(chan->video->name, sizeof(chan->video->name), "%s", sd->name);
+		/* Add subdev name to this video dev name with vi-output tag*/
+		snprintf(chan->video->name, sizeof(chan->video->name), "%s, %s",
+			"vi-output", sd->name);
 
 		index = pad->index - 1;
 	}
@@ -2118,9 +2127,17 @@ static long tegra_channel_default_ioctl(struct file *file, void *fh,
 			bool use_prio, unsigned int cmd, void *arg)
 {
 	struct tegra_channel *chan = video_drvdata(file);
+	struct tegra_mc_vi *vi = chan->vi;
+	long ret = 0;
+
 	struct v4l2_subdev *sd = chan->subdev_on_csi;
 	struct vb2_queue *q = &chan->queue;
 	struct video_device *vdev = chan->video;
+
+	if (vi->fops && vi->fops->vi_default_ioctl) {
+		ret = vi->fops->vi_default_ioctl(file, fh, use_prio, cmd, arg);
+		return ret;
+	}
 
 	switch(cmd) {
 	case VIDIOC_MEM_ALLOC: {
@@ -2818,7 +2835,6 @@ int tegra_channel_init(struct tegra_channel *chan)
 #endif
 	chan->queue.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC
 				   | V4L2_BUF_FLAG_TSTAMP_SRC_EOF;
-	chan->queue.min_buffers_needed = 1;
 	ret = vb2_queue_init(&chan->queue);
 	if (ret < 0) {
 		dev_err(chan->vi->dev, "failed to initialize VB2 queue\n");

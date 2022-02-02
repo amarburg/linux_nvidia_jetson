@@ -198,21 +198,21 @@ static int extract_pixel_format(
 	size_t size = strnlen(pixel_t, OF_MAX_STR_LEN);
 
 	if (strncmp(pixel_t, "bayer_bggr10", size) == 0)
-		*format = V4L2_PIX_FMT_SBGGR16;
+		*format = V4L2_PIX_FMT_SBGGR10;
 	else if (strncmp(pixel_t, "bayer_rggb10", size) == 0)
-		*format = V4L2_PIX_FMT_SRGGB16;
+		*format = V4L2_PIX_FMT_SRGGB10;
 	else if (strncmp(pixel_t, "bayer_grbg10", size) == 0)
-		*format = V4L2_PIX_FMT_SGRBG16;
+		*format = V4L2_PIX_FMT_SGRBG10;
 	else if (strncmp(pixel_t, "bayer_gbrg10", size) == 0)
-		*format = V4L2_PIX_FMT_SGRBG16;
+		*format = V4L2_PIX_FMT_SGBRG10;
 	else if (strncmp(pixel_t, "bayer_bggr12", size) == 0)
-		*format = V4L2_PIX_FMT_SBGGR16;
+		*format = V4L2_PIX_FMT_SBGGR12;
 	else if (strncmp(pixel_t, "bayer_rggb12", size) == 0)
-		*format = V4L2_PIX_FMT_SRGGB16;
+		*format = V4L2_PIX_FMT_SRGGB12;
 	else if (strncmp(pixel_t, "bayer_wdr_pwl_rggb12", size) == 0)
-		*format = V4L2_PIX_FMT_SRGGB16;
+		*format = V4L2_PIX_FMT_SRGGB12;
 	else if (strncmp(pixel_t, "bayer_wdr_dol_rggb10", size) == 0)
-		*format = V4L2_PIX_FMT_SRGGB16;
+		*format = V4L2_PIX_FMT_SRGGB10;
 	else if (strncmp(pixel_t, "bayer_xbggr10p", size) == 0)
 		*format = V4L2_PIX_FMT_XBGGR10P;
 	else if (strncmp(pixel_t, "bayer_xrggb10p", size) == 0)
@@ -225,6 +225,8 @@ static int extract_pixel_format(
 		*format = V4L2_PIX_FMT_UYVY;
 	else if (strncmp(pixel_t, "yuv_vyuy16", size) == 0)
 		*format = V4L2_PIX_FMT_VYUY;
+	else if (strncmp(pixel_t, "grey8", size) == 0)
+		*format = V4L2_PIX_FMT_GREY;
 	else {
 		pr_err("%s: Need to extend format%s\n", __func__, pixel_t);
 		return -EINVAL;
