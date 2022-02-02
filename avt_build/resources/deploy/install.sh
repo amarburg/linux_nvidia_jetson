@@ -80,59 +80,9 @@ inst() {
   if [[ "$MODEL" == *"Nano"* ]]; then
     sudo l4t_payload_updater_t210 bl_update_payload >nv_update_engine.log
 
-<<<<<<< HEAD
-  # On Nano, write signed dtb to partition
-  if [[ "$MODEL" == *"Nano 2GB"* ]]; then
-    echo "Deploying JETSON NANO 2GB DTB"
-    install_dtb_extlinux tegra210-p3448-0003-p3542-0000.dtb
-
-  elif [[ "$MODEL" == *"Nano"* ]]; then
-    echo "Deploying JETSON NANO DTB"
-    while ! valid_nano_model; do
-      echo "Which Jetson Nano Module and Carrier Board revision?"
-      echo "  [1] NVIDIA P3448/3449-A02 (Single CSI port)"
-      echo "  [2] NVIDIA P3448/3449-B00 (Two CSI ports)"
-      echo -n "Selection? "
-      read carrier_select
-      case "$carrier_select" in
-      1)
-        NANO_CARRIER=a02
-        ;;
-      2)
-        NANO_CARRIER=b00
-        ;;
-      esac
-    done
-    NANO_DTB=tegra210-p3448-0000-p3449-0000-$NANO_CARRIER.dtb
-    sudo dd if="$NANO_DTB.encrypt" of=/dev/disk/by-partlabel/DTB status=none
-    sync
-
-  # On Xavier, write signed kernel+dtb+initrd to partition
-  elif [[ "$MODEL" == *"AGX"* ]]; then
-    echo "Deploying AGX XAVIER DTB"
-    sudo nvbootctrl set-active-boot-slot 0
-    sudo dd if=boot_sigheader.img.encrypt of=/dev/disk/by-partlabel/kernel >/dev/null 2>&1
-    sudo dd if=tegra194-p2888-0001-p2822-0000_sigheader.dtb.encrypt of=/dev/disk/by-partlabel/kernel-dtb >/dev/null 2>&1
-
-    sync
-
-  elif [[ "$MODEL" == *"Xavier NX Developer Kit"* ]]; then
-    echo "Deploying XAVIER NX DTB"
-    sudo nvbootctrl set-active-boot-slot 0
-    sudo dd if=boot_sigheader.img.encrypt of=/dev/disk/by-partlabel/kernel
-    sudo dd if=tegra194-p3668-all-p3509-0000_sigheader.dtb.encrypt of=/dev/disk/by-partlabel/kernel-dtb
-
-  elif [[ "$MODEL" == "quill" ]]; then
-    echo "Deploying JETSON TX2 DTB"
-
-    sudo nvbootctrl set-active-boot-slot 0
-    install_dtb_extlinux tegra186-quill-p3310-1000-c03-00-base.dtb
-
-=======
   else
     sudo nv_update_engine -e 2>&1 >nv_update_engine.log
     sudo nv_update_engine -i --payload bl_update_payload --no-reboot 2>&1 >>nv_update_engine.log
->>>>>>> 98558ca694874bc24bc8e998c51717f26e878daa
   fi
 
   # All boards: copy Image + DTBs in rootfs
