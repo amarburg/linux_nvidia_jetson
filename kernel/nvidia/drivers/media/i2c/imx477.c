@@ -637,28 +637,35 @@ static struct camera_common_sensor_ops imx477_common_ops = {
 static int imx477_board_setup(struct imx477 *priv)
 {
 	struct camera_common_data *s_data = priv->s_data;
+	struct camera_common_pdata *pdata = s_data->pdata;
 	struct device *dev = s_data->dev;
 	u8 reg_val[2];
 	int err = 0;
 
-	// Skip mclk enable as this camera has an internal oscillator
+	if (pdata->mclk_name) {
+		err = camera_common_mclk_enable(s_data);
+		if (err) {
+			dev_err(dev, "error turning on mclk (%d)\n", err);
+			goto done;
+		}
+	}
 
 	err = imx477_power_on(s_data);
 	if (err) {
 		dev_err(dev, "error during power on sensor (%d)\n", err);
-		goto done;
+		goto err_power_on;
 	}
 
 	/* Probe sensor model id registers */
 	err = imx477_read_reg(s_data, IMX477_MODEL_ID_ADDR_MSB, &reg_val[0]);
 	if (err) {
-		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+		dev_err(dev, "%s: error while i2c reading IMX477_MODEL_ID_ADDR_MSB (%d)\n",
 			__func__, err);
 		goto err_reg_probe;
 	}
 	err = imx477_read_reg(s_data, IMX477_MODEL_ID_ADDR_LSB, &reg_val[1]);
 	if (err) {
-		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+		dev_err(dev, "%s: error while i2c reading IMX477_MODEL_ID_ADDR_LSB (%d)\n",
 			__func__, err);
 		goto err_reg_probe;
 	}
@@ -675,6 +682,10 @@ static int imx477_board_setup(struct imx477 *priv)
 
 err_reg_probe:
 	imx477_power_off(s_data);
+
+err_power_on:
+	if (pdata->mclk_name)
+		camera_common_mclk_disable(s_data);
 
 done:
 	return err;
