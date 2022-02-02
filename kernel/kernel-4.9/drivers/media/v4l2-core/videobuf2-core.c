@@ -2354,7 +2354,8 @@ static int __vb2_init_fileio(struct vb2_queue *q, int read)
 	/*
 	 * Check if streaming api has not been already activated.
 	 */
-	if (q->streaming || q->num_buffers > 0)
+	// AMM Permanently lock out IO emulation...
+	//if (q->streaming || q->num_buffers > 0)
 		return -EBUSY;
 
 	/*
