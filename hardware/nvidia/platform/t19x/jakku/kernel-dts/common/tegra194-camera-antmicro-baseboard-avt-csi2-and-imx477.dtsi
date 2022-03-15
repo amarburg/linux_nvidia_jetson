@@ -19,6 +19,7 @@
 #define CAMERA_I2C_MUX_BUS(x) (0x1E + x)
 
 #define CAM1_2_VSYNC	TEGRA194_MAIN_GPIO(Q, 6)
+#define CAM2_2_VSYNC	TEGRA194_AON_GPIO(CC, 3)
 
 / {
 	gpio@2200000 {
@@ -56,13 +57,17 @@
 
 		// Right stereo camera on J7
 		// It uses VSYNC_CAM2_2 == pin 130 == GPIO06 == GPIO3_PCC.03 == gpiochip1.19
-		vsync-cam2-2 {
-			gpio-hog;
-			output-low;
-			gpios = <TEGRA194_AON_GPIO(CC, 3) 0>;
-			label = "vsync-cam2-2";
-			status = "okay";
-		};
+		//  == ball name "SPI2_CS0"
+		//
+		// Strangely, when enabled, it breaks access to the QSPI?
+		//
+		// vsync-cam2-2 {
+		// 	gpio-hog;
+		// 	output-low;
+		// 	gpios = <CAM2_2_VSYNC 0>;
+		// 	label = "vsync-cam2-2";
+		// 	status = "okay";
+		// };
 
 	};
 
@@ -185,7 +190,6 @@
 
 			/* I2C mux position 1 is the "right" camera on J6
 			   Virtual I2C bus 31
-			   It uses VSYNC_CAM1_2 == pin 216 == GPIO11 == GPIO3_PQ.06
 			   It uses CSI ports 2 and 3 */
 			i2c@1 {
 				reg = <1>;
@@ -389,7 +393,6 @@
 
 			/* I2C mux position 2 is the "right" camera on J7
 			   Virtual I2C bus 32
-			   It uses VSYNC_CAM2__2 == pin 130 == GPIO06 == GPIO3_PCC.03
 			   It uses CSI ports 0 and 1 */
 			i2c@2 {
 				reg = <2>;
@@ -532,7 +535,8 @@
 			};
 		};
 	};
-
+};
+/ {
 	tcp: tegra-camera-platform {
 		compatible = "nvidia, tegra-camera-platform";
 		/**
