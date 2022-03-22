@@ -679,7 +679,8 @@ static void vi5_channel_stop_kthreads(struct tegra_channel *chan)
 	/* Stop the kthread for capture enqueue */
 	if (chan->kthread_capture_start) {
 		/* Trigger last frame to stop waiting for it */
-		if (chan->trigger_mode) {
+		// AMM DISABLE THIS
+		if (false && chan->trigger_mode) {
 			err = v4l2_subdev_call(sd, core, ioctl, VIDIOC_S_TRIGGER_SOURCE, &source);
 			if (err)
 				dev_err(chan->vi->dev,
@@ -854,7 +855,8 @@ static int vi5_channel_stop_streaming(struct vb2_queue *vq)
 	struct tegra_channel *chan = vb2_get_drv_priv(vq);
 	long err;
 
-	vi_stop_waiting(chan->tegra_vi_channel);
+	// AMM - This causes a segfault for the IMX477
+	//vi_stop_waiting(chan->tegra_vi_channel);
 
 	if (!chan->bypass)
 		vi5_channel_stop_kthreads(chan);
