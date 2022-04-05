@@ -1050,11 +1050,11 @@ tegra_channel_querycap(struct file *file, void *fh, struct v4l2_capability *cap)
 {
 	struct tegra_channel *chan = video_drvdata(file);
 
-	cap->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
+	cap->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING | V4L2_CAP_READWRITE;
 	cap->device_caps |= V4L2_CAP_EXT_PIX_FORMAT;
 	cap->capabilities = cap->device_caps | V4L2_CAP_DEVICE_CAPS;
 
-	strlcpy(cap->driver, "tegra-video", sizeof(cap->driver));
+	strlcpy(cap->driver, "avt_tegra_csi2", sizeof(cap->driver));
 	strlcpy(cap->card, chan->video->name, sizeof(cap->card));
 	snprintf(cap->bus_info, sizeof(cap->bus_info), "platform:%s:%u",
 		 dev_name(chan->vi->dev), chan->port[0]);
