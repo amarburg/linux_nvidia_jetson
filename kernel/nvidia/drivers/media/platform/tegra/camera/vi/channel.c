@@ -1860,6 +1860,7 @@ int tegra_channel_init_subdevices(struct tegra_channel *chan)
 		v4l2_set_subdev_hostdata(sd, chan);
 		sd->grp_id = grp_id;
 		chan->subdev[num_sd++] = sd;
+		// AMM don't get this from upstream, it breaks IMX477
 		/* Add subdev name to this video dev name with vi-output tag*/
 		snprintf(chan->video->name, sizeof(chan->video->name), "%s, %s",
 			"vi-output", sd->name);
@@ -2883,6 +2884,8 @@ int tegra_channel_init(struct tegra_channel *chan)
 #endif
 	chan->queue.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC
 				   | V4L2_BUF_FLAG_TSTAMP_SRC_EOF;
+	// AMM.  Don't get this from upstream, it breaks IMX477
+	//chan->queue.min_buffers_needed = 1;
 	ret = vb2_queue_init(&chan->queue);
 	if (ret < 0) {
 		dev_err(chan->vi->dev, "failed to initialize VB2 queue\n");
