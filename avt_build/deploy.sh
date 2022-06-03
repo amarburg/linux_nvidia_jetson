@@ -118,7 +118,7 @@ createKernelTarball()
 createDeployTarball()
 {
 	rm -rf "$PATH_TARGET_DEPLOY_TMP_FOLDER"
-	mkdir -p "$PATH_TARGET_DEPLOY_TMP_FOLDER"
+	mkdir -p "${PATH_TARGET_DEPLOY_TMP_FOLDER}/dtb/"
 
 	cp "$FILE_INSTALL_SCRIPT" "$PATH_TARGET_DEPLOY_TMP_FOLDER"
 	cp "$FILE_KERNEL_IMAGE" "$PATH_TARGET_DEPLOY_TMP_FOLDER"
@@ -138,6 +138,8 @@ createDeployTarball()
 			sed -i -e '/REQ_MACHINE=/c\REQ_MACHINE="NVidia Jetson Xavier"' "$PATH_TARGET_DEPLOY_TMP_FOLDER/install.sh"
 		else
 			sed -i -e '/REQ_MACHINE=/c\REQ_MACHINE="NVidia Jetson NX"' "$PATH_TARGET_DEPLOY_TMP_FOLDER/install.sh"
+	
+			cp ${FILE_DEVICE_TREE_BLOB_NX} "${PATH_TARGET_DEPLOY_TMP_FOLDER}/dtb/"
 		fi
 
 	elif [ "$DEDICATED_BOARD" = "$DEDICATED_BOARD_TX2" ]
@@ -173,7 +175,8 @@ createDeployTarball()
 	else
 		if (cd "$PATH_TARGET_DEPLOY" && tar -zcvf "${FNAME}${KR}".tar.gz $(basename "${PATH_TARGET_DEPLOY_TMP_FOLDER}"))
 		then
-			log debug "Deploy tarball has been created: ${PATH_TARGET_DEPLOY}/${FNAME}${KR}.tar.gz"
+			mv ${PATH_TARGET_DEPLOY}/${FNAME}${KR}.tar.gz .
+			log debug "Deploy tarball has been created: ${FNAME}${KR}.tar.gz"
 			SUCCESS_FLAG=$TRUE
 		else
 			log error "Could not create tarball with kernel image and device tree files"

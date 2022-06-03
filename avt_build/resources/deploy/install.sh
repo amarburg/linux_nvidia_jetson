@@ -91,6 +91,9 @@ inst() {
   # All boards: Install modules in rootfs
   echo "Unpacking modules to /$(tar tzf modules.tar.gz | head -n 1)"
   sudo tar zxf modules.tar.gz -C /
+
+  echo "Copying dtbs to /boot"
+  sudo cp dtb/* /boot
 }
 
 
