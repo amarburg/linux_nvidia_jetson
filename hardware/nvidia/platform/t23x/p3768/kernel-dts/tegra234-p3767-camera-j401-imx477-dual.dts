@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Jetson Device-tree overlay for dual camera IMX477 rbpcv3 on
- * dual cam connector baseboards
+ * Jetson Device-tree overlay for dual camera IMX477 RasPi HQ cameras on
+ * the Seeed Studio J401 baseboard
  *
  * Copyright (c) 2021-2023 NVIDIA CORPORATION. All rights reserved.
  *
@@ -13,9 +13,9 @@
 #include <dt-common/jetson/tegra234-p3767-0000-common.h>
 
 / {
-	overlay-name = "Camera IMX477 Dual on J401";
+	overlay-name = "[J401] Dual IMX477";
 	jetson-header-name = "Jetson 24pin CSI Connector";
-        compatible = JETSON_COMPATIBLE_P3768;
+    compatible = JETSON_COMPATIBLE_P3768;
 
 	/* IMX477 dual sensor module */
 	fragment@0 {

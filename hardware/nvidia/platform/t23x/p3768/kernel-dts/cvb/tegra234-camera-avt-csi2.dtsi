@@ -93,7 +93,7 @@
 	cam_i2cmux {
 		status="okay";
 		i2c_0:i2c@0 {
-			avt_csi2_cam0@3c {
+			avt_csi2_cam0: avt_csi2_cam0@3c {
 				compatible = "alliedvision,avt_csi2";
 				/* I2C device address */
 				reg = <0x3c>;
@@ -158,7 +158,7 @@
 		};
 
 		i2c_1: i2c@1 {
-			avt_csi2_cam1@3c {
+			avt_csi2_cam1: avt_csi2_cam1@3c {
 				compatible = "alliedvision,avt_csi2";
 				/* I2C device address */
 				reg = <0x3c>;
