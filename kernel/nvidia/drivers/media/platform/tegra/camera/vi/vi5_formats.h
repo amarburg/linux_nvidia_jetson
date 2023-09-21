@@ -105,8 +105,12 @@ static const struct tegra_video_format vi5_video_formats[] = {
 	/* RAW 10 */
 	TEGRA_VIDEO_FORMAT(RAW10, 10, Y10_1X10, 2, 1, T_R16_I,
 				RAW10, XAVIER_Y10, "GREY 10"),
+	// AMM : update this entry to use the "default" V4L2_PIX_FMT_SRGGB10 format
+	//       instead of V4L2_PIX_FMT_XAVIER_SRGGB10 for the IMX477
+	//       This may be breaking nvargus
+	//
 	TEGRA_VIDEO_FORMAT(RAW10, 10, SRGGB10_1X10, 2, 1, T_R16_I,
-				RAW10, XAVIER_SRGGB10, "RGRG.. GBGB.."),
+				RAW10, SRGGB10, "RGRG.. GBGB.."),
 	TEGRA_VIDEO_FORMAT(RAW10, 10, SGRBG10_1X10, 2, 1, T_R16_I,
 				RAW10, XAVIER_SGRBG10, "GRGR.. BGBG.."),
 	TEGRA_VIDEO_FORMAT(RAW10, 10, SGBRG10_1X10, 2, 1, T_R16_I,
