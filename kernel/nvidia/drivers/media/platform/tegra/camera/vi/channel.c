@@ -2061,8 +2061,10 @@ int tegra_channel_init_subdevices(struct tegra_channel *chan)
 		v4l2_set_subdev_hostdata(sd, chan);
 		sd->grp_id = grp_id;
 		chan->subdev[num_sd++] = sd;
-		/* Add subdev name to this video dev name */
-		len = snprintf(chan->video->name, sizeof(chan->video->name), "%s", sd->name);
+		// AMM
+		/* Add subdev name to this video dev name with vi-output tag*/
+		len = snprintf(chan->video->name, sizeof(chan->video->name), "%s, %s",
+			"vi-output", sd->name);
 		if (len < 0)
 			return -EINVAL;
 
@@ -3106,7 +3108,10 @@ int tegra_channel_init(struct tegra_channel *chan)
 #endif
 	chan->queue.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC
 				   | V4L2_BUF_FLAG_TSTAMP_SRC_EOF;
-	chan->queue.min_buffers_needed = 1;
+
+	// AMM
+	//chan->queue.min_buffers_needed = 1;
+
 	ret = vb2_queue_init(&chan->queue);
 	if (ret < 0) {
 		dev_err(chan->vi->dev, "failed to initialize VB2 queue\n");
