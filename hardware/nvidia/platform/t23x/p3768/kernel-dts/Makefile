@@ -42,7 +42,8 @@ dtbo-$(BUILD_ENABLE) += tegra234-p3767-camera-p3768-imx477-dual-4lane.dtbo
 dtbo-$(BUILD_ENABLE) += tegra234-p3767-overlay.dtbo
 dtbo-$(BUILD_ENABLE) += tegra234-p3768-overlay.dtbo
 dtbo-$(BUILD_ENABLE) += tegra234-p3767-camera-j401-imx477-avt.dtbo
-dtbo-$(BUILD_ENABLE) += tegra234-p3767-camera-j401-imx477-dual.dtbo
+dtbo-$(BUILD_ENABLE) += tegra234-p3767-camera-j401-dual-avt.dtbo
+dtbo-$(BUILD_ENABLE) += tegra234-p3767-camera-j401-dual-imx477.dtbo
 
 
 ifneq ($(dtb-y),)

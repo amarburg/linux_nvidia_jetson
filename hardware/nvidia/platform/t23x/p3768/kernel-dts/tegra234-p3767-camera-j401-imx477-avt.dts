@@ -145,11 +145,9 @@
 
 	/* Todo.  Add reference to avt_csi2_cam0 node in the "full" devicetree */
 	fragment@14 {
-		target = <&i2c_0>;
+		target = <&avt_csi2_cam0>;
 		__overlay__ {
-			avt_csi2_cam0@3c {
-				status = "disabled";
-			};
+			status = "disabled";
 		};
 	};
 
