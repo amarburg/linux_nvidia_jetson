@@ -2680,7 +2680,11 @@ static int __vb2_init_fileio(struct vb2_queue *q, int read)
 	/*
 	 * Check if streaming api has not been already activated.
 	 */
-	if (q->streaming || q->num_buffers > 0)
+	// AMM:  Permanently disable streaming API
+	//
+	// See:  https://answers.ros.org/question/378133/nodehandle-changing-the-behavior-of-v4l2-ioctls/
+	//
+	// if (q->streaming || q->num_buffers > 0)
 		return -EBUSY;
 
 	/*
