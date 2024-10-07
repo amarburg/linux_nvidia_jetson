@@ -74,40 +74,39 @@
 
 	};
 
-	host1x {
-		vi@15c10000  {
-			num-channels = <3>;
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-				vi_port0: port@0 {
-					reg = <0>;
-					avt_csi2_vi_in0: endpoint {
-						port-index = <0>;
-						bus-width = <ALVIUM_CSI_LANES>;
-						remote-endpoint = <&avt_csi2_csi_out0>;
-					};
+	tegra-capture-vi  {
+		num-channels = <3>;
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			vi_port0: port@0 {
+				reg = <0>;
+				avt_csi2_vi_in0: endpoint {
+					port-index = <0>;
+					bus-width = <ALVIUM_CSI_LANES>;
+					remote-endpoint = <&avt_csi2_csi_out0>;
 				};
-				vi_port1: port@1 {
-					reg = <1>;
-					avt_csi2_vi_in1: endpoint {
-						port-index = <4>;
-						bus-width = <ALVIUM_CSI_LANES>;
-						remote-endpoint = <&avt_csi2_csi_out1>;
-					};
+			};
+			vi_port1: port@1 {
+				reg = <1>;
+				avt_csi2_vi_in1: endpoint {
+					port-index = <4>;
+					bus-width = <ALVIUM_CSI_LANES>;
+					remote-endpoint = <&avt_csi2_csi_out1>;
 				};
-				vi_port2: port@2 {
-					reg = <2>;
-					rbpcv3_imx477_vi_in0: endpoint {
-						status = "okay";
-						port-index = <2>;
-						bus-width = <2>;
-						remote-endpoint = <&rbpcv3_imx477_csi_out0>;
-					};
+			};
+			vi_port2: port@2 {
+				reg = <2>;
+				rbpcv3_imx477_vi_in0: endpoint {
+					port-index = <2>;
+					bus-width = <2>;
+					remote-endpoint = <&rbpcv3_imx477_csi_out0>;
 				};
 			};
 		};
+	};
 
+	host1x@13e00000 {
 		nvcsi@15a00000 {
 			num-channels = <3>;
 			#address-cells = <1>;
@@ -172,7 +171,6 @@
 						reg = <1>;
 						status = "okay";
 						rbpcv3_imx477_csi_out0: endpoint@1 {
-							status = "okay";
 							remote-endpoint = <&rbpcv3_imx477_vi_in0>;
 						};
 					};
@@ -218,7 +216,6 @@
 					use_sensor_mode_id = "true";
 
 					reset-gpios = <&tegra_main_gpio CAM1_2_VSYNC GPIO_ACTIVE_HIGH>;
-
 
 					mode0 { /* IMX477_MODE_4032X3040 */
 						mclk_khz = "24000";
