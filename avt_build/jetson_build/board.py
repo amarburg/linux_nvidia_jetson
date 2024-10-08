@@ -3,7 +3,7 @@ from collections import namedtuple
 from . import upstream
 from . import build
 
-AVT_RELEASE = "5.1.3"
+AVT_RELEASE = "5.1.3-trisect0.9"
 KERNEL_RELEASE = "5.10.192-tegra"
 L4T_VERSION = "35.5.0"
 
