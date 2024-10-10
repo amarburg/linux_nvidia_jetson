@@ -52,17 +52,17 @@
 		};
 
 		// Left stereo camera on J7
-		// It uses VSYNC_CAM2_1 == pin 114 == CAM0_PWDN == GPIO3_PP.04 == gpiochip0.124
+		// It uses VSYNC_CAM2_1 == pin 114 == CAM0_PWDN == GPIO3_PP.04 == gpiochip1.96
 		vsync-cam2-1 {
 			gpio-hog;
 			output-low;
 			gpios = <TEGRA194_MAIN_GPIO(P, 4) 0>;
-			label = "vsync-cam2-1";
+			label = "avt_left_sync";
 			status = "okay";
 		};
 
 		// Right stereo camera on J7
-		// It uses VSYNC_CAM2_2 == pin 130 == GPIO06 == GPIO3_PCC.03 == gpiochip1.19
+		// It uses VSYNC_CAM2_2 == pin 130 == GPIO06 == GPIO3_PCC.03 == gpiochip2.15
 		//  == ball name "SPI2_CS0"
 		//
 		// Strangely, when enabled, it breaks access to the QSPI?
@@ -71,7 +71,7 @@
 		// 	gpio-hog;
 		// 	output-low;
 		// 	gpios = <CAM2_2_VSYNC 0>;
-		// 	label = "vsync-cam2-2";
+		// 	label = "avt_right_sunc";
 		// 	status = "okay";
 		// };
 
