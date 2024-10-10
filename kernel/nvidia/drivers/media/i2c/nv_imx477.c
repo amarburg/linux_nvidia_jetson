@@ -44,6 +44,18 @@ static const struct of_device_id imx477_of_match[] = {
 
 MODULE_DEVICE_TABLE(of, imx477_of_match);
 
+#define TRISECT
+
+#ifdef TRISECT
+// Preliminary test for Trisect
+#define IMX477_POWER_OFF  (1)
+#define IMX477_POWER_ON   (0)
+#else
+// Conventional logic found in code
+#define IMX477_POWER_OFF  (0)
+#define IMX477_POWER_ON   (1)
+#endif
+
 static const u32 ctrl_cid_list[] = {
 	TEGRA_CAMERA_CID_GAIN,
 	TEGRA_CAMERA_CID_EXPOSURE,
@@ -344,9 +356,9 @@ static int imx477_power_on(struct camera_common_data *s_data)
 
 	if (gpio_is_valid(pw->reset_gpio)) {
 		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, 0);
+			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_OFF);
 		else
-			gpio_set_value(pw->reset_gpio, 0);
+			gpio_set_value(pw->reset_gpio, IMX477_POWER_OFF);
 	}
 
 	if (unlikely(!(pw->avdd || pw->iovdd || pw->dvdd)))
@@ -377,9 +389,9 @@ static int imx477_power_on(struct camera_common_data *s_data)
 skip_power_seqn:
 	if (gpio_is_valid(pw->reset_gpio)) {
 		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, 1);
+			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_ON);
 		else
-			gpio_set_value(pw->reset_gpio, 1);
+			gpio_set_value(pw->reset_gpio, IMX477_POWER_ON);
 	}
 
 	/* Need to wait for t4 + t5 + t9 + t10 time as per the data sheet */
@@ -420,9 +432,9 @@ static int imx477_power_off(struct camera_common_data *s_data)
 	} else {
 		if (pw->reset_gpio) {
 			if (gpio_cansleep(pw->reset_gpio))
-				gpio_set_value_cansleep(pw->reset_gpio, 0);
+				gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_OFF);
 			else
-				gpio_set_value(pw->reset_gpio, 0);
+				gpio_set_value(pw->reset_gpio, IMX477_POWER_OFF);
 		}
 
 		usleep_range(10, 10);
@@ -522,7 +534,7 @@ static int imx477_power_get(struct tegracam_device *tc_dev)
 
 	/* Reset or ENABLE GPIO */
 	pw->reset_gpio = pdata->reset_gpio;
-	err = gpio_request(pw->reset_gpio, "cam_reset_gpio");
+	err = gpio_request(pw->reset_gpio, "imx477_reset_gpio");
 	if (err < 0) {
 		dev_err(dev, "%s: unable to request reset_gpio (%d)\n",
 			__func__, err);
@@ -681,13 +693,13 @@ static int imx477_board_setup(struct imx477 *priv)
 	/* Probe sensor model id registers */
 	err = imx477_read_reg(s_data, IMX477_MODEL_ID_ADDR_MSB, &reg_val[0]);
 	if (err) {
-		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+		dev_err(dev, "%s: error during i2c read of IMX477_MODEL_ID_ADDR_MSB (%d)\n",
 			__func__, err);
 		goto err_reg_probe;
 	}
 	err = imx477_read_reg(s_data, IMX477_MODEL_ID_ADDR_LSB, &reg_val[1]);
 	if (err) {
-		dev_err(dev, "%s: error during i2c read probe (%d)\n",
+		dev_err(dev, "%s: error during i2c read of IMX477_MODEL_ID_ADDR_LSB (%d)\n",
 			__func__, err);
 		goto err_reg_probe;
 	}
