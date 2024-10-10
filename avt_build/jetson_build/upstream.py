@@ -41,7 +41,12 @@ def upstream(args):
       self.expected_sha = sha
 
       uparts = urllib.parse.urlparse(url)
-      self.rel_dl_file = PurePath(uparts.path).relative_to('/embedded')
+
+      try:
+        self.rel_dl_file = PurePath(uparts.path).relative_to('/downloads/embedded')
+      except ValueError:
+        self.rel_dl_file = PurePath(uparts.path).relative_to('/embedded')
+        
       self.local_file = Path(cache_dir, self.rel_dl_file).resolve()
 
     def local_sha(self):

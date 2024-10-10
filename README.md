@@ -1,3 +1,15 @@
+>
+> This branch `avt/l4t-35.6.0` is built on upstream Allied Vision branch [l4t-35.5.0](https://github.com/alliedvision/linux_nvidia_jetson/tree/l4t-35.5.0?tab=readme-ov-file)
+>
+> NVidia kernel sources for 35.6.0 and 35.5.0 was extracted from the respective `public_sources_*.tbz2` files, and a patch was generated per:
+>
+> `diff --no-dereference --new-file -ru kernel_35.5.0 kernel_35.6.0 > ../patch-l4t-35.5.0-to-l4t-35.6.0.patch`
+>
+> This diff was when applied to this branch per:
+>
+> `patch --quiet -lfp1 < ../patch-l4t-35.5.0-to-l4t-35.6.0.patch`
+>
+
 # NVIDIA Jetson driver (Beta)
 
 
