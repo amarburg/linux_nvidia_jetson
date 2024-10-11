@@ -9,19 +9,19 @@ L4T_VERSION = "35.6.0"
 
 FileSet = namedtuple('FileSet', [
   'driver_package',
-  #'rootfs',
+  'rootfs',
   'public_sources'])
 
 
 def get_tx2_agx_nx_upstream_files(UpstreamFile):
   # Note: these are SHA256 sums
   driver_package  = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/release/jetson_linux_r35.6.0_aarch64.tbz2",                     "1cc07ea946df064b1eb5d6ba8bc289d84e6b9f437b5f538e95a0d2ae6639e601")
-  #rootfs          = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/release/tegra_linux_sample-root-filesystem_r35.6.0_aarch64.tbz2", "b4efbda585681111034ca84251116c3af85fb329c63ac4d25360216e807bc6a4")
+  rootfs          = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/release/tegra_linux_sample-root-filesystem_r35.6.0_aarch64.tbz2", "b4efbda585681111034ca84251116c3af85fb329c63ac4d25360216e807bc6a4")
   public_sources  = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/sources/public_sources.tbz2",                             "0b1d3077c3ca3487ae5b9cd66da9a611e1fb30097123265d9453d9975aee8b89")
   
   return FileSet(
     public_sources=public_sources,
-    #rootfs=rootfs,
+    rootfs=rootfs,
     driver_package=driver_package)
 
 #def get_nano_upstream_files(UpstreamFile):

@@ -20,8 +20,12 @@ def prepare(args, board):
     logging.info("Extracting driver package")
     t.extract(board.files.driver_package, board.build_dir, sudo=True)
 
-  #logging.info("Extracting rootfs")
-  #t.extract(board.files.rootfs, board.build_dir / 'Linux_for_Tegra/rootfs', sudo=True)
+  # Need to choose a file which exists in rootfs
+  if not (Path(board.build_dir) / "Linux_for_Tegra" / "rootfs" / "etc" / "hosts" ).exists():
+    logging.info("Extracting rootfs")
+    t.extract(board.files.rootfs, board.build_dir / 'Linux_for_Tegra/rootfs', sudo=True)
+
+
   logging.warning("Extracting public_sources DISABLED")
   #t.extract(board.files.public_sources, board.build_dir)
   #t.execute(['sudo', './apply_binaries.sh'], cwd=board.build_dir / 'Linux_for_Tegra')
