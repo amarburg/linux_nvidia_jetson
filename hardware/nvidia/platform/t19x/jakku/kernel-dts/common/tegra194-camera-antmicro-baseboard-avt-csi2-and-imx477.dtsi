@@ -1,0 +1,612 @@
+/*
+ * Copyright (c) 2018-2020, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <dt-bindings/media/camera.h>
+
+#define CAMERA_I2C_MUX_BUS(x) (0x1E + x)
+
+#define CAM1_2_VSYNC	TEGRA194_MAIN_GPIO(Q, 6)
+#define CAM2_2_VSYNC	TEGRA194_AON_GPIO(CC, 3)
+
+#define ALVIUM_CSI_LANES      2
+#define ALVIUM_CSI_LANES_STR  "2"
+
+/ {
+	gpio@2200000 {
+
+		// This is the configuration for the first camera on J6, which we don't use
+		//  It uses VSYNC_CAM1_1 == pin 228 == GPIO13 == GPIO3_PN.01
+		//
+		// vsync-cam1-1 {
+		// 	gpio-hog;
+		// 	output-low;
+		// 	gpios = <TEGRA194_MAIN_GPIO(N, 1) 0>;
+		// 	label = "vsync-cam1-1";
+		// 	status = "okay";
+		// };
+
+		// Color camera on J6
+		// It uses VSYNC_CAM1_2 == pin 216 == GPIO11 == GPIO3_PQ.06 == gpiochip0.134
+		vsync-cam1-2 {
+			gpio-hog;
+			output-low;
+			gpios = <CAM1_2_VSYNC 0>;
+			label = "vsync-cam1-2";
+			status = "okay";
+		};
+
+		// Left stereo camera on J7
+		// It uses VSYNC_CAM2_1 == pin 114 == CAM0_PWDN == GPIO3_PP.04 == gpiochip0.124
+		vsync-cam2-1 {
+			gpio-hog;
+			output-low;
+			gpios = <TEGRA194_MAIN_GPIO(P, 4) 0>;
+			label = "vsync-cam2-1";
+			status = "okay";
+		};
+
+		// Right stereo camera on J7
+		// It uses VSYNC_CAM2_2 == pin 130 == GPIO06 == GPIO3_PCC.03 == gpiochip1.19
+		//  == ball name "SPI2_CS0"
+		//
+		// Strangely, when enabled, it breaks access to the QSPI?
+		//
+		// vsync-cam2-2 {
+		// 	gpio-hog;
+		// 	output-low;
+		// 	gpios = <CAM2_2_VSYNC 0>;
+		// 	label = "vsync-cam2-2";
+		// 	status = "okay";
+		// };
+
+	};
+
+	host1x {
+		vi@15c10000  {
+			num-channels = <3>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				vi_port0: port@0 {
+					reg = <0>;
+					avt_csi2_vi_in0: endpoint {
+						port-index = <0>;
+						bus-width = <ALVIUM_CSI_LANES>;
+						remote-endpoint = <&avt_csi2_csi_out0>;
+					};
+				};
+				vi_port1: port@1 {
+					reg = <1>;
+					avt_csi2_vi_in1: endpoint {
+						port-index = <4>;
+						bus-width = <ALVIUM_CSI_LANES>;
+						remote-endpoint = <&avt_csi2_csi_out1>;
+					};
+				};
+				vi_port2: port@2 {
+					reg = <2>;
+					rbpcv3_imx477_vi_in0: endpoint {
+						status = "okay";
+						port-index = <2>;
+						bus-width = <2>;
+						remote-endpoint = <&rbpcv3_imx477_csi_out0>;
+					};
+				};
+			};
+		};
+
+		nvcsi@15a00000 {
+			num-channels = <3>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			csi_chan0: channel@0 {
+				reg = <0>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					csi_chan0_port0: port@0 {
+						reg = <0>;
+						avt_csi2_csi_in0: endpoint@0 {
+							port-index = <0>;
+							bus-width = <ALVIUM_CSI_LANES>;
+							remote-endpoint = <&avt_csi2_out0>;
+						};
+					};
+					csi_chan0_port1: port@1 {
+						reg = <1>;
+						avt_csi2_csi_out0: endpoint@1 {
+							remote-endpoint = <&avt_csi2_vi_in0>;
+						};
+					};
+				};
+			};
+			csi_chan1: channel@1 {
+				reg = <1>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					csi_chan1_port0: port@0 {
+						reg = <0>;
+						avt_csi2_csi_in1: endpoint@0 {
+							port-index = <4>;
+							bus-width = <ALVIUM_CSI_LANES>;
+							remote-endpoint = <&avt_csi2_out1>;
+						};
+					};
+					csi_chan1_port1: port@1 {
+						reg = <1>;
+						avt_csi2_csi_out1: endpoint@1 {
+							remote-endpoint = <&avt_csi2_vi_in1>;
+						};
+					};
+				};
+			};
+			csi_chan2: channel@2 {
+				reg = <2>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					csi_chan2_port0: port@0 {
+						reg = <0>;
+						status = "okay";
+						rbpcv3_imx477_csi_in0: endpoint@0 {
+							port-index = <2>;
+							bus-width = <2>;
+							remote-endpoint = <&rbpcv3_imx477_out0>;
+						};
+					};
+					csi_chan2_port1: port@1 {
+						reg = <1>;
+						status = "okay";
+						rbpcv3_imx477_csi_out0: endpoint@1 {
+							status = "okay";
+							remote-endpoint = <&rbpcv3_imx477_vi_in0>;
+						};
+					};
+				};
+			};
+		};
+	};
+
+	i2c@3180000 {
+		avt_pca9548: avt_pca9548@70 {
+			compatible = "nxp,pca9548";
+			status = "okay";
+			reg = <0x70>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			vcc-supply = <&battery_reg>;
+			force_bus_start = <CAMERA_I2C_MUX_BUS(0)>;
+
+			/* I2C mux position 0 / virtual I2C bus 30 is unused */
+
+			/* I2C mux position 1 is the "color" camera on J6
+			   Virtual I2C bus 31
+			   It uses CSI port C with two lanes */
+			i2c@1 {
+				reg = <1>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				imx477_cam0: imx477@1a {
+					compatible = "ridgerun,imx477";
+					/* I2C device address */
+					reg = <0x1a>;
+
+					/* V4L2 device node location */
+					devnode = "video2";
+
+					/* Physical dimensions of sensor */
+					physical_w = "7.564";
+					physical_h = "5.476";
+
+					sensor_model = "imx477";
+
+					use_sensor_mode_id = "true";
+
+					reset-gpios = <&tegra_main_gpio CAM1_2_VSYNC GPIO_ACTIVE_HIGH>;
+
+
+					mode0 { /* IMX477_MODE_4032X3040 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_c";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+
+						active_w = "4032";
+						active_h = "3040";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "9024";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "840000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "356"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "30000000"; /* 30.0 fps */
+						step_framerate = "1";
+						default_framerate = "30000000"; /* 30.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+
+						embedded_metadata_height = "2";
+					};
+					mode1 { /* IMX477_MODE_1920X1080 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_c";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+
+						active_w = "1920";
+						active_h = "1080";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "9024";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "840000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "356"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "60000000"; /* 60.0 fps */
+						step_framerate = "1";
+						default_framerate = "60000000"; /* 60.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+
+						embedded_metadata_height = "2";
+					};
+					mode2 { /* IMX477_MODE_1920X1440 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_c";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+
+						active_w = "1920";
+						active_h = "1440";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "6524";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "840000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "356"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "60000000"; /* 60.0 fps */
+						step_framerate = "1";
+						default_framerate = "60000000"; /* 60.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+
+						embedded_metadata_height = "2";
+					};
+					mode3 { /* IMX477_MODE_2028X1520 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_c";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+
+						active_w = "2028";
+						active_h = "1520";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "6524";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "840000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "356"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "60000000"; /* 60.0 fps */
+						step_framerate = "1";
+						default_framerate = "60000000"; /* 60.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+
+						embedded_metadata_height = "2";
+					};
+
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						port@0 {
+							reg = <0>;
+							rbpcv3_imx477_out0: endpoint {
+								port-index = <2>;
+								bus-width = <2>;
+								remote-endpoint = <&rbpcv3_imx477_csi_in0>;
+							};
+						};
+					};
+				};
+			};
+
+			/* I2C mux position 2 is the "right" camera on J7
+			   Virtual I2C bus 32
+			   (sync pin for this camera is currently disabled, but it 
+			   can be triggered by a "jumpered" Y-cable
+			   It uses CSI ports A and B with 2/4 lanes */
+			i2c@2 {
+				reg = <2>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				avt_csi2@3c {
+					compatible = "alliedvision,avt_csi2";
+					/* I2C device address */
+					reg = <0x3c>;
+
+					status = "okay";
+
+					/* V4L2 device node location */
+					devnode = "video0";
+
+					mode0 {
+						num_lanes = ALVIUM_CSI_LANES_STR;
+						tegra_sinterface = "serial_a";
+						discontinuous_clk = "no";
+						cil_settletime = "0";
+						embedded_metadata_height = "0";
+
+						/* not verified: */
+						mclk_khz = "24000";
+						phy_mode = "DPHY";
+						dpcm_enable = "false";
+
+						active_w = "1936";
+						active_h = "1216";
+						pixel_t = "grey8";
+						csi_pixel_bit_depth = "12";
+						readout_orientation = "0";
+						line_length = "1936";
+						inherent_gain = "1";
+						mclk_multiplier = "31.25";
+						pix_clk_hz = "750000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.0 */
+						max_gain_val = "256"; /* 16.0 */
+						step_gain_val = "1"; /* 0.125 */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "64";
+						min_framerate = "1500000"; /* 1.5 */
+						max_framerate = "30000000"; /* 30 */
+						step_framerate = "1";
+						min_exp_time = "34"; /* us */
+						max_exp_time = "550385"; /* us */
+						step_exp_time = "1";
+					};
+
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						port@0 {
+							reg = <0>;
+							avt_csi2_out0: endpoint {
+								port-index = <0>;
+								bus-width = <ALVIUM_CSI_LANES>;
+								remote-endpoint = <&avt_csi2_csi_in0>;
+							};
+						};
+					};
+				};
+			};
+
+			/* I2C mux position 3 is the "left" camera on J7
+			   Virtual I2C bus 33
+			   It uses VSYNC_CAM2_1 == pin 114 == CAM0_PWDN == GPIO3_PP.04
+			   It uses CSI ports E and F with 2/4 lanes */
+			i2c@3 {
+				reg = <3>;
+				i2c-mux,deselect-on-exit;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				avt_csi2@3c {
+					compatible = "alliedvision,avt_csi2";
+					/* I2C device address */
+					reg = <0x3c>;
+
+					status = "okay";
+
+					/* V4L2 device node location */
+					devnode = "video1";
+
+					mode0 {
+						num_lanes = ALVIUM_CSI_LANES_STR;
+						tegra_sinterface = "serial_e";
+						discontinuous_clk = "no";
+						cil_settletime = "0";
+						embedded_metadata_height = "0";
+
+						/* not verified: */
+						mclk_khz = "24000";
+						phy_mode = "DPHY";
+						dpcm_enable = "false";
+
+						active_w = "1936";
+						active_h = "1216";
+						pixel_t = "grey8";
+						csi_pixel_bit_depth = "12";
+						readout_orientation = "0";
+						line_length = "1936";
+						inherent_gain = "1";
+						mclk_multiplier = "31.25";
+						pix_clk_hz = "750000000";
+
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.0 */
+						max_gain_val = "256"; /* 16.0 */
+						step_gain_val = "1"; /* 0.125 */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "64";
+						min_framerate = "1500000"; /* 1.5 */
+						max_framerate = "30000000"; /* 30 */
+						step_framerate = "1";
+						min_exp_time = "34"; /* us */
+						max_exp_time = "550385"; /* us */
+						step_exp_time = "1";
+					};
+
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						port@0 {
+							reg = <0>;
+							avt_csi2_out1: endpoint {
+								status = "okay";
+								port-index = <4>;
+								bus-width = <ALVIUM_CSI_LANES>;
+								remote-endpoint = <&avt_csi2_csi_in1>;
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+/ {
+	tcp: tegra-camera-platform {
+		compatible = "nvidia, tegra-camera-platform";
+		/**
+		* Physical settings to calculate max ISO BW
+		*
+		* num_csi_lanes = <>;
+		* Total number of CSI lanes when all cameras are active
+		*
+		* max_lane_speed = <>;
+		* Max lane speed in Kbit/s
+		*
+		* min_bits_per_pixel = <>;
+		* Min bits per pixel
+		*
+		* vi_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the VI ISO case
+		*
+		* vi_bw_margin_pct = <>;
+		* Vi bandwidth margin in percentage
+		*
+		* max_pixel_rate = <>;
+		* Max pixel rate in Kpixel/s for the ISP ISO case
+		*
+		* isp_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the ISP ISO case
+		*
+		* isp_bw_margin_pct = <>;
+		* Isp bandwidth margin in percentage
+		*/
+		num_csi_lanes = <10>;
+		max_lane_speed = <1500000>;
+		min_bits_per_pixel = <10>;
+		vi_peak_byte_per_pixel = <2>;
+		vi_bw_margin_pct = <25>;
+		max_pixel_rate = <240000>;
+		isp_peak_byte_per_pixel = <5>;
+		isp_bw_margin_pct = <25>;
+
+		/**
+		 * The general guideline for naming badge_info contains 3 parts, and is as follows,
+		 * The first part is the camera_board_id for the module; if the module is in a FFD
+		 * platform, then use the platform name for this part.
+		 * The second part contains the position of the module, ex. "rear" or "front".
+		 * The third part contains the last 6 characters of a part number which is found
+		 * in the module's specsheet from the vendor.
+		 */
+		modules {
+
+			cam_module0: module0 {
+				badge = "antmicro_front_imx477";
+				position = "top";
+				orientation = "1";
+				status = "okay";
+				cam_module0_drivernode0: drivernode0 {
+					status = "okay";
+					pcl_id = "v4l2_sensor";
+					devname = "imx477 31-001a";
+					proc-device-tree = "/proc/device-tree/i2c@3180000/avt_pca9548@70/i2c@1/imx477@1a";
+				};
+			};
+		};
+	};
+};
+

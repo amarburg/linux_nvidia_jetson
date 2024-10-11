@@ -9,6 +9,7 @@ ifneq ($(filter y,$(CONFIG_ARCH_TEGRA_19x_SOC) $(CONFIG_ARCH_TEGRA_194_SOC)),)
 BUILD_ENABLE=y
 endif
 
+dtb-$(BUILD_ENABLE) += tegra194-p3668-0000-trisect.dtb
 dtb-$(BUILD_ENABLE) += tegra194-p3668-all-p3509-0000.dtb
 dtb-$(BUILD_ENABLE) += tegra194-p3668-0000-p3509-0000.dtb
 dtb-$(BUILD_ENABLE) += tegra194-p3668-0000-p3509-0000-avt.dtb

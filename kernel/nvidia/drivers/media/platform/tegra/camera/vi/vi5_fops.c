@@ -535,7 +535,7 @@ static void vi5_capture_dequeue(struct tegra_channel *chan,
 			goto rel_buf;
 
 		/* Dequeue a frame and check its capture status */
- 		timeout_ms = chan->capture_timeout_ms;
+ 		//AMM timeout_ms = chan->capture_timeout_ms;
  		err = vi_capture_status(chan->tegra_vi_channel[vi_port], timeout_ms);
   		if (err) {
   			if (err == -ETIMEDOUT) {
