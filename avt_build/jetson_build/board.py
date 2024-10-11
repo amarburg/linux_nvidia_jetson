@@ -3,9 +3,9 @@ from collections import namedtuple
 from . import upstream
 from . import build
 
-AVT_RELEASE = "5.1.3-trisect0.9"
-KERNEL_RELEASE = "5.10.192-tegra"
-L4T_VERSION = "35.5.0"
+AVT_RELEASE = "5.1.4-trisect1.0"
+KERNEL_RELEASE = "5.10.216-tegra"
+L4T_VERSION = "35.6.0"
 
 FileSet = namedtuple('FileSet', [
   'driver_package',
@@ -14,10 +14,11 @@ FileSet = namedtuple('FileSet', [
 
 
 def get_tx2_agx_nx_upstream_files(UpstreamFile):
-  driver_package  = UpstreamFile("https://developer.download.nvidia.com/embedded/L4T/r35_Release_v5.0/release/Jetson_Linux_R35.5.0_aarch64.tbz2",                     "8cde3bd937d3eedb640a1c58d108c109f7cb904c38a03101dc17904b7d185ddf")
-  #rootfs          = UpstreamFile("https://developer.nvidia.com/embedded/l4t/r32_release_v7.1/t186/tegra_linux_sample-root-filesystem_r32.7.1_aarch64.tbz2", "17996e861dd092043509e0b7e9ae038e271e5b0b7b78f26a34db4f03df2b12b8")
-  public_sources  = UpstreamFile("https://developer.download.nvidia.com/embedded/L4T/r35_Release_v5.0/sources/public_sources.tbz2",                             "89368d7003c278cdcf3746501db0ba5aa01f8cf9b39f2205d2d16c7852ab523e")
-
+  # Note: these are SHA256 sums
+  driver_package  = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/release/jetson_linux_r35.6.0_aarch64.tbz2",                     "1cc07ea946df064b1eb5d6ba8bc289d84e6b9f437b5f538e95a0d2ae6639e601")
+  #rootfs          = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/release/tegra_linux_sample-root-filesystem_r35.6.0_aarch64.tbz2", "b4efbda585681111034ca84251116c3af85fb329c63ac4d25360216e807bc6a4")
+  public_sources  = UpstreamFile("https://developer.nvidia.com/downloads/embedded/l4t/r35_release_v6.0/sources/public_sources.tbz2",                             "0b1d3077c3ca3487ae5b9cd66da9a611e1fb30097123265d9453d9975aee8b89")
+  
   return FileSet(
     public_sources=public_sources,
     #rootfs=rootfs,

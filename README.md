@@ -1,5 +1,3 @@
-This branch is based on `devel/l4t-35.4.1-drysect-testing` with AVT branch [`l4t-35.5.0`](https://github.com/alliedvision/linux_nvidia_jetson/tree/l4t-35.5.0) merged in.
-
 # NVIDIA Jetson driver (Beta)
 
 
