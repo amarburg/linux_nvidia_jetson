@@ -37,24 +37,16 @@
 
 #define IMX477_SENSOR_INTERNAL_CLK_FREQ   840000000
 
+#define IMX477_POWER_ON(pw) (pw->invert_reset_gpio ? 0 : 1)
+#define IMX477_POWER_OFF(pw) (pw->invert_reset_gpio ? 1 : 0)
+
+
 static const struct of_device_id imx477_of_match[] = {
 	{.compatible = "ridgerun,imx477",},
 	{},
 };
 
 MODULE_DEVICE_TABLE(of, imx477_of_match);
-
-#define TRISECT
-
-#ifdef TRISECT
-// Preliminary test for Trisect
-#define IMX477_POWER_OFF  (1)
-#define IMX477_POWER_ON   (0)
-#else
-// Conventional logic found in code
-#define IMX477_POWER_OFF  (0)
-#define IMX477_POWER_ON   (1)
-#endif
 
 static const u32 ctrl_cid_list[] = {
 	TEGRA_CAMERA_CID_GAIN,
@@ -356,9 +348,9 @@ static int imx477_power_on(struct camera_common_data *s_data)
 
 	if (gpio_is_valid(pw->reset_gpio)) {
 		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_OFF);
+			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_OFF(pdata));
 		else
-			gpio_set_value(pw->reset_gpio, IMX477_POWER_OFF);
+			gpio_set_value(pw->reset_gpio, IMX477_POWER_OFF(pdata));
 	}
 
 	if (unlikely(!(pw->avdd || pw->iovdd || pw->dvdd)))
@@ -389,9 +381,9 @@ static int imx477_power_on(struct camera_common_data *s_data)
 skip_power_seqn:
 	if (gpio_is_valid(pw->reset_gpio)) {
 		if (gpio_cansleep(pw->reset_gpio))
-			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_ON);
+			gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_ON(pw));
 		else
-			gpio_set_value(pw->reset_gpio, IMX477_POWER_ON);
+			gpio_set_value(pw->reset_gpio, IMX477_POWER_ON(pw));
 	}
 
 	/* Need to wait for t4 + t5 + t9 + t10 time as per the data sheet */
@@ -432,9 +424,9 @@ static int imx477_power_off(struct camera_common_data *s_data)
 	} else {
 		if (pw->reset_gpio) {
 			if (gpio_cansleep(pw->reset_gpio))
-				gpio_set_value_cansleep(pw->reset_gpio, IMX477_POWER_OFF);
+				gpio_set_value_cansleep(pw->reset_gpio,  IMX477_POWER_OFF(pw));
 			else
-				gpio_set_value(pw->reset_gpio, IMX477_POWER_OFF);
+				gpio_set_value(pw->reset_gpio,  IMX477_POWER_OFF(pw));
 		}
 
 		usleep_range(10, 10);
@@ -534,6 +526,7 @@ static int imx477_power_get(struct tegracam_device *tc_dev)
 
 	/* Reset or ENABLE GPIO */
 	pw->reset_gpio = pdata->reset_gpio;
+	pw->invert_reset_gpio = pdata->invert_reset_gpio;
 	err = gpio_request(pw->reset_gpio, "imx477_reset_gpio");
 	if (err < 0) {
 		dev_err(dev, "%s: unable to request reset_gpio (%d)\n",
@@ -580,6 +573,11 @@ static struct camera_common_pdata *imx477_parse_dt(struct tegracam_device
 		goto error;
 	}
 	board_priv_pdata->reset_gpio = (unsigned int)gpio;
+
+	board_priv_pdata->invert_reset_gpio = of_property_read_bool(np, "invert-reset-gpio");
+	if (board_priv_pdata->invert_reset_gpio) {
+		dev_info(dev,"Using inverted reset polarity\n");
+	}
 
 	err = of_property_read_string(np, "mclk", &board_priv_pdata->mclk_name);
 	if (err)

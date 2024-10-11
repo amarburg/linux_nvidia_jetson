@@ -373,6 +373,7 @@
 					use_sensor_mode_id = "true";
 
 					reset-gpios = <&tegra_main_gpio CAM1_2_VSYNC GPIO_ACTIVE_HIGH>;
+					invert-reset-gpio;
 
 					/**
 					* ==== Modes ====
