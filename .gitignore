@@ -23,3 +23,5 @@ __pycache__
 avt_build/work
 avt_build/.dlcache
 avt_build/build.log
+
+.vscode/

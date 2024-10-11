@@ -78,13 +78,13 @@ nx_devkit = BoardDefinition('Jetson Xavier NX devkit', '0x19', '3668', [
     #NX 16GB
     Configuration('DevKit', 'tegra194-p3668-0001-p3509-0000-avt.dtb', '0003'),
 
-    Configuration('Auvidea JNX30', 'tegra194-p3668-0000-p3509-0000-auvidea-jnx30.dtb', '0000'),
-    Configuration('Auvidea JNX30', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30.dtb', '0001'),
-    Configuration('Auvidea JNX30D', 'tegra194-p3668-0000-p3509-0000-auvidea-jnx30d.dtb', '0000'),
-    Configuration('Auvidea JNX30D', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30d.dtb', '0001'),
-    #NX 16GB
-    Configuration('Auvidea JNX30', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30.dtb', '0003'),
-    Configuration('Auvidea JNX30D', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30d.dtb', '0003'),
+    # Configuration('Auvidea JNX30', 'tegra194-p3668-0000-p3509-0000-auvidea-jnx30.dtb', '0000'),
+    # Configuration('Auvidea JNX30', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30.dtb', '0001'),
+    # Configuration('Auvidea JNX30D', 'tegra194-p3668-0000-p3509-0000-auvidea-jnx30d.dtb', '0000'),
+    # Configuration('Auvidea JNX30D', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30d.dtb', '0001'),
+    # #NX 16GB
+    # Configuration('Auvidea JNX30', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30.dtb', '0003'),
+    # Configuration('Auvidea JNX30D', 'tegra194-p3668-0001-p3509-0000-auvidea-jnx30d.dtb', '0003'),
 
     #Configuration('Auvidea JNX30+38491 FPD-Link (beta)', 'tegra194-p3668-all-p3509-0000-auvidea-jnx30-38491.dtb', '0000', beta=True, rootfs='/dev/mmcblk1p1'),
     #Configuration('Auvidea JNX30+38491 FPD-Link (beta)', 'tegra194-p3668-all-p3509-0000-auvidea-jnx30-38491.dtb', '0001', beta=True, rootfs='/dev/mmcblk1p1'),
